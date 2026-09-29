@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1 to 5 Class - Combined Marks Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #0d9488;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #cbd5e1;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--primary);
+            margin-top: 5px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        input, select {
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button.btn-success { background-color: #16a34a; }
+        button.btn-secondary { background-color: #475569; }
+        button.btn-danger { background-color: #dc2626; }
+
+        button:hover { opacity: 0.9; }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 6px 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        #individualPrintCard {
+            display: none;
+        }
+
+        /* ------------------------------------
+           DYNAMIC PRINT PAGE MEDIA STYLING
+        ------------------------------------ */
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+
+            .no-print, button, form {
+                display: none !important;
+            }
+
+            .card {
+                box-shadow: none;
+                padding: 0;
+                margin-bottom: 10px;
+            }
+
+            /* PRINT MODE 1: INDIVIDUAL (A4 LANDSCAPE) */
+            body.print-individual #consolidatedCard {
+                display: none !important;
+            }
+
+            body.print-individual #individualPrintCard {
+                display: block !important;
+            }
+
+            /* PRINT MODE 2: CONSOLIDATED (A3 LANDSCAPE) */
+            body.print-consolidated #individualPrintCard {
+                display: none !important;
+            }
+
+            body.print-consolidated #consolidatedCard {
+                display: block !important;
+            }
+
+            body.print-consolidated table {
+                font-size: 11px;
+                width: 100%;
+            }
+        }
+
+        /* DYNAMIC PAGE MARGINS & SIZES */
+        @page {
+            margin: 8mm;
+        }
+
+        body.print-individual {
+            @page {
+                size: A4 landscape;
+            }
+        }
+
+        body.print-consolidated {
+            @page {
+                size: A3 landscape;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header class="no-print">
+        <h1>1 TO 5TH COMBINED MARKS REGISTER</h1>
+    </header>
+
+    <!-- SECTION 1: INDIVIDUAL MARKS ENTRY FORM -->
+    <div class="card no-print">
+        <h2>📝 Individual Student Marks Entry</h2>
+        <form id="marksForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>S.No / Roll No</label>
+                    <input type="number" id="studentId" required min="1">
+                </div>
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" id="studentName" required placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label>Kannada (100)</label>
+                    <input type="number" id="kannada" min="0" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label>English (100)</label>
+                    <input type="number" id="english" min="0" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label>Maths (100)</label>
+                    <input type="number" id="maths" min="0" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label>EVS (100)</label>
+                    <input type="number" id="evs" min="0" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label>Days Present</label>
+                    <input type="number" id="daysPresent" min="0" required value="200">
+                </div>
+                <div class="form-group">
+                    <label>Total Working Days</label>
+                    <input type="number" id="totalDays" min="1" required value="220">
+                </div>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Physical Health Grade</label>
+                    <select id="physicalHealth">
+                        <option value="A+">A+</option><option value="A" selected>A</option>
+                        <option value="B+">B+</option><option value="B">B</option><option value="C">C</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Arts & Crafts Grade</label>
+                    <select id="artsCrafts">
+                        <option value="A+">A+</option><option value="A" selected>A</option>
+                        <option value="B+">B+</option><option value="B">B</option><option value="C">C</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Dance & Music Grade</label>
+                    <select id="danceMusic">
+                        <option value="A+">A+</option><option value="A" selected>A</option>
+                        <option value="B+">B+</option><option value="B">B</option><option value="C">C</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>SUPW Grade</label>
+                    <select id="supw">
+                        <option value="A+">A+</option><option value="A" selected>A</option>
+                        <option value="B+">B+</option><option value="B">B</option><option value="C">C</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Value Education Grade</label>
+                    <select id="valueEdu">
+                        <option value="A+">A+</option><option value="A" selected>A</option>
+                        <option value="B+">B+</option><option value="B">B</option><option value="C">C</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit">Save / Add Record</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- PRINT CARD: INDIVIDUAL MARKSHEET (A4 LANDSCAPE) -->
+    <div class="card" id="individualPrintCard">
+        <h2>STUDENT ASSESSMENT MARKSHEET</h2>
+        <div id="individualDetails" style="margin-bottom: 15px; font-weight: 500; font-size: 13px;"></div>
+        <table id="individualTable">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Max Marks</th>
+                    <th>Marks Obtained</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody id="individualTableBody"></tbody>
+        </table>
+        <div id="individualSummary" style="margin-top: 15px; font-weight: bold; font-size: 13px;"></div>
+        <br><br>
+        <div style="display: flex; justify-content: space-between; margin-top: 30px; font-weight: bold;">
+            <span>Class Teacher Signature</span>
+            <span>Headmaster Signature</span>
+        </div>
+    </div>
+
+    <!-- SECTION 2: CONSOLIDATED REGISTER (A3 LANDSCAPE) -->
+    <div class="card" id="consolidatedCard">
+        <h2>📊 Consolidated Marks Register</h2>
+        <div class="btn-group no-print" style="margin-bottom: 15px;">
+            <button class="btn-success" onclick="printConsolidated()">🖨️ Print Consolidated Register (A3 Landscape)</button>
+        </div>
+        <div class="table-responsive">
+            <table id="consolidatedTable">
+                <thead>
+                    <tr>
+                        <th rowspan="2">S.NO</th>
+                        <th rowspan="2">STUDENT NAME</th>
+                        <th rowspan="2">ATTENDANCE</th>
+                        <th colspan="2">KANNADA</th>
+                        <th colspan="2">ENGLISH</th>
+                        <th colspan="2">MATHS</th>
+                        <th colspan="2">EVS</th>
+                        <th colspan="3">TOTAL</th>
+                        <th colspan="5">CO-CURRICULAR GRADES</th>
+                        <th rowspan="2">RESULT</th>
+                        <th rowspan="2" class="no-print">ACTION</th>
+                    </tr>
+                    <tr>
+                        <th>MARKS</th><th>GRADE</th>
+                        <th>MARKS</th><th>GRADE</th>
+                        <th>MARKS</th><th>GRADE</th>
+                        <th>MARKS</th><th>GRADE</th>
+                        <th>TOTAL</th><th>%</th><th>GRADE</th>
+                        <th>PHY</th><th>ARTS</th><th>DANCE</th><th>SUPW</th><th>VAL</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="no-print">
+        <p>Designed by : LAKSHMIKANTH R (Mob: 9844444871)</p>
+    </footer>
+
+</div>
+
+<script>
+    const STORAGE_KEY = 'NEW_COMBINED_MARKS_REGISTER';
+
+    function getGrade(score) {
+        if (score >= 90) return 'A+';
+        if (score >= 80) return 'A';
+        if (score >= 70) return 'B+';
+        if (score >= 60) return 'B';
+        if (score >= 50) return 'C+';
+        if (score >= 35) return 'C';
+        return 'D';
+    }
+
+    function getStoredData() {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    }
+
+    function saveData(data) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        renderTable();
+    }
+
+    function renderTable() {
+        const students = getStoredData();
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+
+        if (students.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="22">No records available. Add entries using the form above.</td></tr>`;
+            return;
+        }
+
+        students.forEach((s, index) => {
+            const total = s.kannada + s.english + s.maths + s.evs;
+            const percentage = (total / 400 * 100).toFixed(1);
+            const overallGrade = getGrade(percentage);
+            const attendance = `${s.daysPresent}/${s.totalDays}`;
+            const isPass = (s.kannada >= 35 && s.english >= 35 && s.maths >= 35 && s.evs >= 35);
+            const result = isPass ? 'PASS' : 'FAIL';
+
+            const row = `
+                <tr>
+                    <td>${s.id}</td>
+                    <td>${s.name}</td>
+                    <td>${attendance}</td>
+                    <td>${s.kannada}</td><td>${getGrade(s.kannada)}</td>
+                    <td>${s.english}</td><td>${getGrade(s.english)}</td>
+                    <td>${s.maths}</td><td>${getGrade(s.maths)}</td>
+                    <td>${s.evs}</td><td>${getGrade(s.evs)}</td>
+                    <td>${total}</td>
+                    <td>${percentage}%</td>
+                    <td>${overallGrade}</td>
+                    <td>${s.physicalHealth}</td>
+                    <td>${s.artsCrafts}</td>
+                    <td>${s.danceMusic}</td>
+                    <td>${s.supw}</td>
+                    <td>${s.valueEdu}</td>
+                    <td style="color: ${isPass ? 'green' : 'red'}; font-weight: bold;">${result}</td>
+                    <td class="no-print">
+                        <button onclick="printIndividual(${index})" class="btn-secondary" style="padding: 3px 6px; font-size: 11px;">Print (A4)</button>
+                        <button onclick="deleteStudent(${index})" class="btn-danger" style="padding: 3px 6px; font-size: 11px;">Delete</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    document.getElementById('marksForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const student = {
+            id: parseInt(document.getElementById('studentId').value),
+            name: document.getElementById('studentName').value,
+            kannada: parseFloat(document.getElementById('kannada').value),
+            english: parseFloat(document.getElementById('english').value),
+            maths: parseFloat(document.getElementById('maths').value),
+            evs: parseFloat(document.getElementById('evs').value),
+            daysPresent: parseInt(document.getElementById('daysPresent').value),
+            totalDays: parseInt(document.getElementById('totalDays').value),
+            physicalHealth: document.getElementById('physicalHealth').value,
+            artsCrafts: document.getElementById('artsCrafts').value,
+            danceMusic: document.getElementById('danceMusic').value,
+            supw: document.getElementById('supw').value,
+            valueEdu: document.getElementById('valueEdu').value
+        };
+
+        let data = getStoredData();
+        const existingIndex = data.findIndex(item => item.id === student.id);
+        
+        if (existingIndex > -1) {
+            data[existingIndex] = student;
+        } else {
+            data.push(student);
+        }
+
+        saveData(data);
+        this.reset();
+    });
+
+    function deleteStudent(index) {
+        let data = getStoredData();
+        data.splice(index, 1);
+        saveData(data);
+    }
+
+    // CONSOLIDATED PRINT (A3 LANDSCAPE)
+    function printConsolidated() {
+        document.body.className = 'print-consolidated';
+        window.print();
+        document.body.className = '';
+    }
+
+    // INDIVIDUAL PRINT (A4 LANDSCAPE)
+    function printIndividual(index) {
+        const student = getStoredData()[index];
+        const total = student.kannada + student.english + student.maths + student.evs;
+        const percentage = (total / 400 * 100).toFixed(1);
+        const overallGrade = getGrade(percentage);
+        const isPass = (student.kannada >= 35 && student.english >= 35 && student.maths >= 35 && student.evs >= 35);
+
+        document.getElementById('individualDetails').innerHTML = `
+            <strong>S.No:</strong> ${student.id} &nbsp;&nbsp;|&nbsp;&nbsp; 
+            <strong>Student Name:</strong> ${student.name} &nbsp;&nbsp;|&nbsp;&nbsp;
+            <strong>Attendance:</strong> ${student.daysPresent}/${student.totalDays}
+        `;
+
+        document.getElementById('individualTableBody').innerHTML = `
+            <tr><td>Kannada</td><td>100</td><td>${student.kannada}</td><td>${getGrade(student.kannada)}</td></tr>
+            <tr><td>English</td><td>100</td><td>${student.english}</td><td>${getGrade(student.english)}</td></tr>
+            <tr><td>Maths</td><td>100</td><td>${student.maths}</td><td>${getGrade(student.maths)}</td></tr>
+            <tr><td>EVS</td><td>100</td><td>${student.evs}</td><td>${getGrade(student.evs)}</td></tr>
+        `;
+
+        document.getElementById('individualSummary').innerHTML = `
+            Total Marks: ${total}/400 &nbsp;&nbsp;|&nbsp;&nbsp; 
+            Percentage: ${percentage}% &nbsp;&nbsp;|&nbsp;&nbsp; 
+            Overall Grade: ${overallGrade} &nbsp;&nbsp;|&nbsp;&nbsp; 
+            Result: <span style="color: ${isPass ? 'green' : 'red'};">${isPass ? 'PASS' : 'FAIL'}</span>
+        `;
+
+        document.body.className = 'print-individual';
+        window.print();
+        document.body.className = '';
+    }
+
+    window.onload = renderTable;
+</script>
+
+</body>
+</html>
